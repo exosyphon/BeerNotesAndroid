@@ -11,6 +11,12 @@ public class Beer {
 
     public Beer(){}
 
+    public Beer(String name, String beerType, String notes) {
+        this.name = name;
+        this.beerType = beerType;
+        this.notes = notes;
+    }
+
     public String getName() {
         return name;
     }

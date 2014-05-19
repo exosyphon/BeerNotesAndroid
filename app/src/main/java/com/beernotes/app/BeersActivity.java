@@ -17,8 +17,15 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class BeersActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -107,6 +114,7 @@ public class BeersActivity extends ActionBarActivity
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        public static final String BEERS_JSON_URL = "http://serene-wildwood-6609.herokuapp.com/beers.json";
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -129,7 +137,8 @@ public class BeersActivity extends ActionBarActivity
             View rootView = inflater.inflate(R.layout.fragment_beers, container, false);
 
             ListView listView = (ListView) rootView.findViewById(R.id.beers_list_view);
-            listView.setAdapter(new BeersAdapter());
+            final BeersAdapter adapter = new BeersAdapter();
+            listView.setAdapter(adapter);
 
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -140,10 +149,34 @@ public class BeersActivity extends ActionBarActivity
                 @Override
                 public void onClick(View view) {
                     try {
-                        URL url = new URL("http://www.google.com");
+                        URL url = new URL(BEERS_JSON_URL);
                         HttpURLConnection datConnection = (HttpURLConnection) url.openConnection();
+
+                        String result = "";
+                        InputStream is = null;
+
+                        is = (InputStream) datConnection.getContent();
+
+                        // Read response to string
+                        try {
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"), 8);
+                            StringBuilder sb = new StringBuilder();
+                            String line = null;
+                            while ((line = reader.readLine()) != null) {
+                                sb.append(line + "\n");
+                            }
+                            is.close();
+                            result = sb.toString();
+                        } catch (Exception e) {
+                        }
+
+
                         int rCode = datConnection.getResponseCode();
                         updateView.setText("Got response code: " + rCode);
+
+                        if (rCode == 200) {
+                            adapter.seedBeersArray(readStream(result));
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -158,6 +191,27 @@ public class BeersActivity extends ActionBarActivity
             super.onAttach(activity);
             ((BeersActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
+        }
+
+        private ArrayList<Beer> readStream(String in) {
+            ArrayList<Beer> returnArray = new ArrayList<Beer>();
+
+            try {
+                JSONArray jArray = new JSONArray(in);
+                for (int i = 0; i < jArray.length(); i++) {
+                    JSONObject oneObject = jArray.getJSONObject(i);
+                    // Pulling items from the array
+                    String oneObjectsItem = oneObject.getString("name");
+                    String oneObjectsItem1 = oneObject.getString("beerType");
+                    String oneObjectsItem2 = oneObject.getString("notes");
+
+                    returnArray.add(new Beer(oneObjectsItem, oneObjectsItem1, oneObjectsItem2));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return returnArray;
         }
     }
 

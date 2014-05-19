@@ -14,27 +14,16 @@ import java.util.ArrayList;
  */
 public class BeersAdapter extends BaseAdapter {
 
-    static ArrayList<Beer> beers = new ArrayList<Beer>();
-    static
-    {
-        Beer firstBeer = new Beer();
-        firstBeer.setName("Courter Porter");
-        firstBeer.setBeerType("Porter");
-        firstBeer.setNotes("Some sweet notes.");
+    private ArrayList<Beer> beers;
 
-        Beer secondBeer = new Beer();
-        secondBeer.setName("Some Red Ale");
-        secondBeer.setBeerType("Red Ale");
-        secondBeer.setNotes("Some super dee duper cool stuff.");
+    public BeersAdapter() {
+        super();
+        this.beers = new ArrayList<Beer>();
+    }
 
-        Beer thirdBeer = new Beer();
-        thirdBeer.setName("Some Shitty IPA");
-        thirdBeer.setBeerType("IPA");
-        thirdBeer.setNotes("IPAs suck.");
-
-        beers.add(firstBeer);
-        beers.add(secondBeer);
-        beers.add(thirdBeer);
+    public void seedBeersArray(ArrayList<Beer> array) {
+        beers.clear();
+        beers.addAll(array);
     }
 
     @Override
