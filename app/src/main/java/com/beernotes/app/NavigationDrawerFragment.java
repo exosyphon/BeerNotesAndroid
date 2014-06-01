@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -34,6 +35,14 @@ import java.net.URL;
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
 public class NavigationDrawerFragment extends Fragment {
+
+    static ArrayList<String> optionsList =  new ArrayList<String>();
+    static {
+        optionsList.add("Beers");
+        optionsList.add("Recipes");
+        optionsList.add("Ingredients");
+        optionsList.add("Settings");
+    }
 
     /**
      * Remember the position of the selected item.
@@ -107,9 +116,7 @@ public class NavigationDrawerFragment extends Fragment {
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_1,
                 android.R.id.text1,
-                new String[]{
-                        getString(R.string.beers_section),
-                }));
+                optionsList));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
         return mDrawerListView;
@@ -129,7 +136,7 @@ public class NavigationDrawerFragment extends Fragment {
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
 
-        // set a custom shadow that overlays the main content when the drawer opens
+        // set a custom shadow that overlays the recipes content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
 
@@ -252,8 +259,8 @@ public class NavigationDrawerFragment extends Fragment {
             return true;
         }
 
-        if (item.getItemId() == R.id.action_example) {
-            Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
+        if (item.getItemId() == R.id.action_resync_data) {
+            Toast.makeText(getActivity(), "Re-sync complete", Toast.LENGTH_SHORT).show();
             return true;
         }
 

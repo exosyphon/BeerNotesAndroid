@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -29,6 +28,11 @@ import java.util.ArrayList;
 
 public class BeersActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    private final static int BEERS_SECTION_NUMBER = 1;
+    private final static int RECIPES_SECTION_NUMBER = 2;
+    private final static int INGREDIENTS_SECTION_NUMBER = 3;
+    private final static int SETTINGS_SECTION_NUMBER = 4;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -57,7 +61,7 @@ public class BeersActivity extends ActionBarActivity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
+        // update the recipes content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
@@ -66,8 +70,17 @@ public class BeersActivity extends ActionBarActivity
 
     public void onSectionAttached(int number) {
         switch (number) {
-            case 1:
+            case BEERS_SECTION_NUMBER:
                 mTitle = getString(R.string.beers_section);
+                break;
+            case RECIPES_SECTION_NUMBER:
+                mTitle = getString(R.string.recipes_section);
+                break;
+            case INGREDIENTS_SECTION_NUMBER:
+                mTitle = getString(R.string.ingredients_section);
+                break;
+            case SETTINGS_SECTION_NUMBER:
+                mTitle = getString(R.string.settings_section);
                 break;
         }
     }
@@ -134,54 +147,55 @@ public class BeersActivity extends ActionBarActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_beers, container, false);
+            int check = getArguments().getInt(ARG_SECTION_NUMBER);
 
-            ListView listView = (ListView) rootView.findViewById(R.id.beers_list_view);
-            final BeersAdapter adapter = new BeersAdapter();
-            listView.setAdapter(adapter);
+            View rootView = null;
+            if (check == BEERS_SECTION_NUMBER) {
+                rootView = inflater.inflate(R.layout.fragment_beers, container, false);
 
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
+                ListView listView = (ListView) rootView.findViewById(R.id.beers_list_view);
+                final BeersAdapter adapter = new BeersAdapter();
+                listView.setAdapter(adapter);
 
-            final TextView updateView = (TextView) rootView.findViewById(R.id.response_text_view);
-            Button pushMe = (Button) rootView.findViewById(R.id.button);
-            pushMe.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+
+                final TextView updateView = (TextView) rootView.findViewById(R.id.title_text_view);
+                try {
+                    URL url = new URL(BEERS_JSON_URL);
+                    HttpURLConnection datConnection = (HttpURLConnection) url.openConnection();
+
+                    String result = "";
+                    InputStream is = null;
+
+                    is = (InputStream) datConnection.getContent();
+
+                    // Read response to string
                     try {
-                        URL url = new URL(BEERS_JSON_URL);
-                        HttpURLConnection datConnection = (HttpURLConnection) url.openConnection();
-
-                        String result = "";
-                        InputStream is = null;
-
-                        is = (InputStream) datConnection.getContent();
-
-                        // Read response to string
-                        try {
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"), 8);
-                            StringBuilder sb = new StringBuilder();
-                            String line = null;
-                            while ((line = reader.readLine()) != null) {
-                                sb.append(line + "\n");
-                            }
-                            is.close();
-                            result = sb.toString();
-                        } catch (Exception e) {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"), 8);
+                        StringBuilder sb = new StringBuilder();
+                        String line = null;
+                        while ((line = reader.readLine()) != null) {
+                            sb.append(line + "\n");
                         }
-
-
-                        int rCode = datConnection.getResponseCode();
-                        updateView.setText("Got response code: " + rCode);
-
-                        if (rCode == 200) {
-                            adapter.seedBeersArray(readStream(result));
-                        }
+                        is.close();
+                        result = sb.toString();
                     } catch (Exception e) {
-                        e.printStackTrace();
                     }
+
+                    int rCode = datConnection.getResponseCode();
+                    if (rCode == 200) {
+                        adapter.seedBeersArray(readStream(result));
+                        adapter.notifyDataSetChanged();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
+            } else if (check == RECIPES_SECTION_NUMBER) {
+                rootView = inflater.inflate(R.layout.fragment_recipes, container, false);
+            }else if (check == INGREDIENTS_SECTION_NUMBER) {
+            }else if (check == SETTINGS_SECTION_NUMBER) {
+            }
 
             return rootView;
         }
