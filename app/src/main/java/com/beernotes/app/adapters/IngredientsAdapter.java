@@ -1,40 +1,43 @@
-package com.beernotes.app;
+package com.beernotes.app.adapters;
 
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.beernotes.app.R;
+import com.beernotes.app.adapters.DataAdapter;
+import com.beernotes.app.models.Ingredient;
 
 import java.util.ArrayList;
 
 /**
- * Created by andrew on 2/22/14.
+ * Created by andrew on 6/1/14.
  */
-public class BeersAdapter extends DataAdapter {
+public class IngredientsAdapter extends DataAdapter {
 
-    private ArrayList<Beer> beers;
+    private ArrayList<Ingredient> ingredients;
 
-    public BeersAdapter() {
+    public IngredientsAdapter() {
         super();
-        this.beers = new ArrayList<Beer>();
+        this.ingredients = new ArrayList<Ingredient>();
     }
 
     @Override
     public void seedDataArray(ArrayList array) {
-        beers.clear();
-        beers.addAll(array);
+        ingredients.clear();
+        ingredients.addAll(array);
     }
 
     @Override
     public int getCount() {
-        return beers.size();
+        return ingredients.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return beers.get(i);
+        return ingredients.get(i);
     }
 
     @Override
@@ -51,16 +54,12 @@ public class BeersAdapter extends DataAdapter {
         // returning it to the ListView.
 
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
-        View beerRowView = layoutInflater.inflate(R.layout.beer_row_view, viewGroup, false);
+        View recipeRowView = layoutInflater.inflate(R.layout.ingredient_row_view, viewGroup, false);
 
-        TextView nameTextView = (TextView) beerRowView.findViewById(R.id.nameTextView);
-        TextView typeTextView = (TextView) beerRowView.findViewById(R.id.typeTextView);
-        TextView notesTextView = (TextView) beerRowView.findViewById(R.id.notesTextView);
+        TextView nameTextView = (TextView) recipeRowView.findViewById(R.id.nameTextView);
 
-        nameTextView.setText(((Beer) getItem(i)).getName());
-        typeTextView.setText(((Beer) getItem(i)).getBeerType());
-        notesTextView.setText(((Beer) getItem(i)).getNotes());
+        nameTextView.setText(((Ingredient) getItem(i)).getName());
 
-        return beerRowView;
+        return recipeRowView;
     }
 }

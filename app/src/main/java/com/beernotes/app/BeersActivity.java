@@ -15,6 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.beernotes.app.adapters.BeersAdapter;
+import com.beernotes.app.adapters.DataAdapter;
+import com.beernotes.app.adapters.IngredientsAdapter;
+import com.beernotes.app.adapters.RecipesAdapter;
+import com.beernotes.app.models.Beer;
+import com.beernotes.app.models.Recipe;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -60,7 +67,6 @@ public class BeersActivity extends ActionBarActivity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the recipes content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
@@ -128,6 +134,7 @@ public class BeersActivity extends ActionBarActivity
         private static final String ARG_SECTION_NUMBER = "section_number";
         public static final String BEERS_JSON_URL = "http://serene-wildwood-6609.herokuapp.com/beers.json";
         public static final String RECIPES_JSON_URL = "http://serene-wildwood-6609.herokuapp.com/beers/1/recipes.json";
+        public static final String INGREDIENTS_JSON_URL = "http://serene-wildwood-6609.herokuapp.com/beers/1/recipes/1/ingredients.json";
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -152,68 +159,37 @@ public class BeersActivity extends ActionBarActivity
             View rootView = null;
             if (check == BEERS_SECTION_NUMBER) {
                 rootView = inflater.inflate(R.layout.fragment_beers, container, false);
-
                 ListView listView = (ListView) rootView.findViewById(R.id.beers_list_view);
-                final BeersAdapter adapter = new BeersAdapter();
+                BeersAdapter adapter = new BeersAdapter();
                 listView.setAdapter(adapter);
 
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                StrictMode.setThreadPolicy(policy);
+                setupThreadPolicy();
 
                 updateDataFromRemoteEndpoint(adapter, BEERS_JSON_URL, BEERS_SECTION_NUMBER);
             } else if (check == RECIPES_SECTION_NUMBER) {
                 rootView = inflater.inflate(R.layout.fragment_recipes, container, false);
 
                 ListView listView = (ListView) rootView.findViewById(R.id.recipes_list_view);
-                final RecipesAdapter adapter = new RecipesAdapter();
+                RecipesAdapter adapter = new RecipesAdapter();
                 listView.setAdapter(adapter);
 
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                StrictMode.setThreadPolicy(policy);
+                setupThreadPolicy();
 
                 updateDataFromRemoteEndpoint(adapter, RECIPES_JSON_URL, RECIPES_SECTION_NUMBER);
             } else if (check == INGREDIENTS_SECTION_NUMBER) {
+                rootView = inflater.inflate(R.layout.fragment_ingredients, container, false);
+
+                ListView listView = (ListView) rootView.findViewById(R.id.ingredients_list_view);
+                IngredientsAdapter adapter = new IngredientsAdapter();
+                listView.setAdapter(adapter);
+
+                setupThreadPolicy();
+
+                updateDataFromRemoteEndpoint(adapter, INGREDIENTS_JSON_URL, INGREDIENTS_SECTION_NUMBER);
             } else if (check == SETTINGS_SECTION_NUMBER) {
             }
 
             return rootView;
-        }
-
-        private void updateDataFromRemoteEndpoint(DataAdapter adapter, String urlString, int sectionNumber) {
-            try {
-                URL url = new URL(urlString);
-                HttpURLConnection datConnection = (HttpURLConnection) url.openConnection();
-
-                String result = "";
-                InputStream is = null;
-
-                is = (InputStream) datConnection.getContent();
-
-                // Read response to string
-                try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"), 8);
-                    StringBuilder sb = new StringBuilder();
-                    String line = null;
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line + "\n");
-                    }
-                    is.close();
-                    result = sb.toString();
-                } catch (Exception e) {
-                }
-
-                int rCode = datConnection.getResponseCode();
-                if (rCode == 200) {
-                    if (sectionNumber == BEERS_SECTION_NUMBER) {
-                        adapter.seedDataArray(readBeerStream(result));
-                    } else if (sectionNumber == RECIPES_SECTION_NUMBER) {
-                        adapter.seedDataArray(readRecipeStream(result));
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
 
         @Override
@@ -262,6 +238,48 @@ public class BeersActivity extends ActionBarActivity
             }
 
             return returnArray;
+        }
+
+        private void updateDataFromRemoteEndpoint(DataAdapter adapter, String urlString, int sectionNumber) {
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection datConnection = (HttpURLConnection) url.openConnection();
+
+                String result = "";
+                InputStream is = null;
+
+                is = (InputStream) datConnection.getContent();
+
+                // Read response to string
+                try {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"), 8);
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+                    is.close();
+                    result = sb.toString();
+                } catch (Exception e) {
+                }
+
+                int rCode = datConnection.getResponseCode();
+                if (rCode == 200) {
+                    if (sectionNumber == BEERS_SECTION_NUMBER) {
+                        adapter.seedDataArray(readBeerStream(result));
+                    } else if (sectionNumber == RECIPES_SECTION_NUMBER) {
+                        adapter.seedDataArray(readRecipeStream(result));
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void setupThreadPolicy() {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
         }
     }
 

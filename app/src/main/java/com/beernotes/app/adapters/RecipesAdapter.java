@@ -1,11 +1,14 @@
-package com.beernotes.app;
+package com.beernotes.app.adapters;
 
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.beernotes.app.R;
+import com.beernotes.app.adapters.DataAdapter;
+import com.beernotes.app.models.Recipe;
 
 import java.util.ArrayList;
 

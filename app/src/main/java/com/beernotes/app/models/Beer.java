@@ -1,4 +1,4 @@
-package com.beernotes.app;
+package com.beernotes.app.models;
 
 /**
  * Created by andrew on 2/22/14.

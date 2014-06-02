@@ -1,4 +1,4 @@
-package com.beernotes.app;
+package com.beernotes.app.adapters;
 
 import android.widget.BaseAdapter;
 
