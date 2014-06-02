@@ -10,31 +10,31 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by andrew on 2/22/14.
+ * Created by andrew on 6/1/14.
  */
-public class BeersAdapter extends DataAdapter {
+public class RecipesAdapter extends DataAdapter {
 
-    private ArrayList<Beer> beers;
+    private ArrayList<Recipe> recipes;
 
-    public BeersAdapter() {
+    public RecipesAdapter() {
         super();
-        this.beers = new ArrayList<Beer>();
+        this.recipes = new ArrayList<Recipe>();
     }
 
     @Override
     public void seedDataArray(ArrayList array) {
-        beers.clear();
-        beers.addAll(array);
+        recipes.clear();
+        recipes.addAll(array);
     }
 
     @Override
     public int getCount() {
-        return beers.size();
+        return recipes.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return beers.get(i);
+        return recipes.get(i);
     }
 
     @Override
@@ -51,16 +51,14 @@ public class BeersAdapter extends DataAdapter {
         // returning it to the ListView.
 
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
-        View beerRowView = layoutInflater.inflate(R.layout.beer_row_view, viewGroup, false);
+        View recipeRowView = layoutInflater.inflate(R.layout.recipe_row_view, viewGroup, false);
 
-        TextView nameTextView = (TextView) beerRowView.findViewById(R.id.nameTextView);
-        TextView typeTextView = (TextView) beerRowView.findViewById(R.id.typeTextView);
-        TextView notesTextView = (TextView) beerRowView.findViewById(R.id.notesTextView);
+        TextView nameTextView = (TextView) recipeRowView.findViewById(R.id.nameTextView);
+        TextView notesTextView = (TextView) recipeRowView.findViewById(R.id.notesTextView);
 
-        nameTextView.setText(((Beer) getItem(i)).getName());
-        typeTextView.setText(((Beer) getItem(i)).getBeerType());
-        notesTextView.setText(((Beer) getItem(i)).getNotes());
+        nameTextView.setText(((Recipe) getItem(i)).getName());
+        notesTextView.setText(((Recipe) getItem(i)).getBoilNotes());
 
-        return beerRowView;
+        return recipeRowView;
     }
 }
