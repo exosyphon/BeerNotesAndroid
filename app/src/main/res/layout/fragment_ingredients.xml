@@ -14,12 +14,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:text="Ingredients"
-        android:textSize="28sp"/>
+        android:textSize="28sp" />
 
     <ListView
         android:id="@+id/ingredients_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/title_text_view"/>
+        android:layout_below="@id/title_text_view" />
 
 </RelativeLayout>

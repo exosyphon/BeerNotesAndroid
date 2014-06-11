@@ -10,4 +10,19 @@
         android:layout_height="wrap_content"
         android:id="@+id/nameTextView" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/amountTextView" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/unitTextView" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addTimeTextView" />
+
 </LinearLayout>

@@ -20,6 +20,7 @@ import com.beernotes.app.adapters.DataAdapter;
 import com.beernotes.app.adapters.IngredientsAdapter;
 import com.beernotes.app.adapters.RecipesAdapter;
 import com.beernotes.app.models.Beer;
+import com.beernotes.app.models.Ingredient;
 import com.beernotes.app.models.Recipe;
 
 import org.json.JSONArray;
@@ -133,8 +134,8 @@ public class BeersActivity extends ActionBarActivity
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
         public static final String BEERS_JSON_URL = "http://serene-wildwood-6609.herokuapp.com/beers.json";
-        public static final String RECIPES_JSON_URL = "http://serene-wildwood-6609.herokuapp.com/beers/1/recipes.json";
-        public static final String INGREDIENTS_JSON_URL = "http://serene-wildwood-6609.herokuapp.com/beers/1/recipes/1/ingredients.json";
+        public static final String RECIPES_JSON_URL = "http://serene-wildwood-6609.herokuapp.com/all_recipes.json";
+        public static final String INGREDIENTS_JSON_URL = "http://serene-wildwood-6609.herokuapp.com/all_ingredients.json";
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -240,6 +241,28 @@ public class BeersActivity extends ActionBarActivity
             return returnArray;
         }
 
+        private ArrayList<Ingredient> readIngredientStream(String in) {
+            ArrayList<Ingredient> returnArray = new ArrayList<Ingredient>();
+
+            try {
+                JSONArray jArray = new JSONArray(in);
+                for (int i = 0; i < jArray.length(); i++) {
+                    JSONObject oneObject = jArray.getJSONObject(i);
+                    // Pulling items from the array
+                    String oneObjectsItem = oneObject.getString("name");
+                    String oneObjectsItem2 = oneObject.getString("amount");
+                    String oneObjectsItem3 = oneObject.getString("unit");
+                    String oneObjectsItem4 = oneObject.getString("addTime");
+
+                    returnArray.add(new Ingredient(oneObjectsItem, oneObjectsItem2, oneObjectsItem3, oneObjectsItem4));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return returnArray;
+        }
+
         private void updateDataFromRemoteEndpoint(DataAdapter adapter, String urlString, int sectionNumber) {
             try {
                 URL url = new URL(urlString);
@@ -269,6 +292,8 @@ public class BeersActivity extends ActionBarActivity
                         adapter.seedDataArray(readBeerStream(result));
                     } else if (sectionNumber == RECIPES_SECTION_NUMBER) {
                         adapter.seedDataArray(readRecipeStream(result));
+                    } else if (sectionNumber == INGREDIENTS_SECTION_NUMBER) {
+                        adapter.seedDataArray(readIngredientStream(result));
                     }
                     adapter.notifyDataSetChanged();
                 }

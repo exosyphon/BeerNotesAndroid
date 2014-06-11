@@ -54,12 +54,18 @@ public class IngredientsAdapter extends DataAdapter {
         // returning it to the ListView.
 
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
-        View recipeRowView = layoutInflater.inflate(R.layout.ingredient_row_view, viewGroup, false);
+        View ingredientRowView = layoutInflater.inflate(R.layout.ingredient_row_view, viewGroup, false);
 
-        TextView nameTextView = (TextView) recipeRowView.findViewById(R.id.nameTextView);
+        TextView nameTextView = (TextView) ingredientRowView.findViewById(R.id.nameTextView);
+        TextView amountTextView = (TextView) ingredientRowView.findViewById(R.id.amountTextView);
+        TextView unitTextView = (TextView) ingredientRowView.findViewById(R.id.unitTextView);
+        TextView addTimeTextView = (TextView) ingredientRowView.findViewById(R.id.addTimeTextView);
 
         nameTextView.setText(((Ingredient) getItem(i)).getName());
+        amountTextView.setText(((Ingredient) getItem(i)).getAmount());
+        unitTextView.setText(((Ingredient) getItem(i)).getUnit());
+        addTimeTextView.setText(((Ingredient) getItem(i)).getAddTime());
 
-        return recipeRowView;
+        return ingredientRowView;
     }
 }
